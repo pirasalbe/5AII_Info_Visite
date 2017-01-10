@@ -1,18 +1,16 @@
 <?php
     session_start();
     
-    if(!isset($_SESSION))
+    if(!isset($_SESSION['ready']))
     {
-        echo "ciao";
         $_SESSION['ready'] = false;
-        $_SESSION['number'] = 1;
+        $_SESSION['array'] = array();
     }
     
     if(isset($_POST['reset']))
     {
-        echo "ciaone";
-        session_destroy();
         $_SESSION = array();
+        session_destroy();
     }
 ?>
 
@@ -34,28 +32,31 @@
     						<div class="jumbotron text-center"><h2>Benvenuto!</h2></div>
     					</div>
     					
-                        <div class="col-sm-2">
+                        <div class="col-sm-12">
         					<div class="form-group">
                                 <?php
                                     
-                                    $_SESSION[$_SESSION['number']]=date('l jS \of F Y h:i:s A');
-                                    $_SESSION['number']++;
-                                
-                                    if($_SESSION['ready'])
+                                    if(!isset($_POST['reset']))
                                     {
-                                        echo "<div><h3>Accessi precedenti</h3></div>";
-                                        foreach($_SESSION as &$data)
-                                            if($data != $_SESSION['ready'])
-                                                echo "<div class='alert alert-info'>" . $data . "</div>";
-                                                
-                                        echo "<div><h3>Accesso corrente</h3></div>";
-                                        echo "<div class='alert alert-success'>" . $data . "</div>";
+                                        if($_SESSION['ready'])
+                                        {
+                                            echo "<div><h3>Accessi precedenti</h3></div>";
+                                            foreach($_SESSION['array'] as &$data)
+                                                    echo "<div class='alert alert-info'>" . $data . "</div>";
+                                                    
+                                            echo "<div><h3>Accesso corrente</h3></div>";
+                                            echo "<div class='alert alert-success'>" . date('l jS \of F Y h:i:s A') . "</div>";
+                                        }
+                                        else
+                                            $_SESSION['ready'] = true;
+                                            
+                                            
+                                        array_push($_SESSION['array'], date('l jS \of F Y h:i:s A'));
                                     }
-                                    else
-                                        $_SESSION['ready'] = true;
                                 
                                 ?>
-                                <input class="btn btn-default" align="center" type="submit" name="log" value="reset">
+                                <input class="btn btn-default" align="center" type="submit" name="reset" value="reset">
+                                <input class="btn btn-default" align="center" type="submit" name="si" value="aggiorna">
                             </div>
                         </div>
                         
